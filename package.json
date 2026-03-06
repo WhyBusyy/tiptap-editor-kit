@@ -1,0 +1,76 @@
+{
+  "name": "tiptap-editor-kit",
+  "version": "0.1.0",
+  "description": "Custom Tiptap WYSIWYG editor — React & Vanilla JS",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./vanilla": {
+      "import": {
+        "types": "./dist/vanilla.d.ts",
+        "default": "./dist/vanilla.js"
+      },
+      "require": {
+        "types": "./dist/vanilla.d.cts",
+        "default": "./dist/vanilla.cjs"
+      }
+    },
+    "./styles.css": "./dist/tiptap.css",
+    "./vanilla.css": "./dist/vanilla.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": { "optional": true },
+    "react-dom": { "optional": true }
+  },
+  "dependencies": {
+    "@tiptap/core": "^2.11.0",
+    "@tiptap/extension-color": "^2.11.0",
+    "@tiptap/extension-font-family": "^2.11.0",
+    "@tiptap/extension-highlight": "^2.11.0",
+    "@tiptap/extension-image": "^2.11.0",
+    "@tiptap/extension-link": "^2.11.0",
+    "@tiptap/extension-table": "^2.11.0",
+    "@tiptap/extension-table-cell": "^2.11.0",
+    "@tiptap/extension-table-header": "^2.11.0",
+    "@tiptap/extension-table-row": "^2.11.0",
+    "@tiptap/extension-text-align": "^2.11.0",
+    "@tiptap/extension-text-style": "^2.11.0",
+    "@tiptap/extension-underline": "^2.11.0",
+    "@tiptap/pm": "^2.11.0",
+    "@tiptap/react": "^2.11.0",
+    "@tiptap/starter-kit": "^2.11.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "license": "MIT"
+}
