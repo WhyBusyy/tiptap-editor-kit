@@ -1,6 +1,6 @@
 {
   "name": "tiptap-editor-kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Custom Tiptap WYSIWYG editor — React & Vanilla JS",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -43,8 +43,12 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "peerDependenciesMeta": {
-    "react": { "optional": true },
-    "react-dom": { "optional": true }
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@tiptap/core": "^2.11.0",
@@ -72,5 +76,18 @@
     "tsup": "^8.0.0",
     "typescript": "^5.0.0"
   },
+  "keywords": [
+    "tiptap",
+    "wysiwyg",
+    "editor",
+    "rich-text",
+    "react",
+    "vanilla-js",
+    "toolbar",
+    "image-upload",
+    "table",
+    "prosemirror",
+    "typescript"
+  ],
   "license": "MIT"
 }
