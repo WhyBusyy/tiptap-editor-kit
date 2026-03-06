@@ -2,16 +2,18 @@
 
 [![NPM](https://img.shields.io/npm/v/tiptap-editor-kit.svg)](https://www.npmjs.com/package/tiptap-editor-kit)
 
-`tiptap-editor-kit` | Tiptap 기반 커스텀 WYSIWYG 에디터. React 컴포넌트와 Vanilla JS 팩토리를 하나의 패키지로 제공합니다.
+`tiptap-editor-kit` | A ready-to-use Tiptap WYSIWYG editor with full toolbar, image upload, and table support — works with both React and Vanilla JS.
+
+[한국어 문서](./README.ko.md)
 
 ## Features
 
-- **React & Vanilla JS** — 하나의 패키지에서 두 가지 방식 모두 지원
-- **풀 툴바** — 제목, 서식, 폰트, 색상, 정렬, 이미지, 링크, 리스트, 테이블, 서식 제거
-- **이미지 업로드** — 드래그 & 드롭 / 붙여넣기 / 버튼 클릭 3가지 방식
-- **커스텀 업로드 핸들러** — `onImageUpload` prop으로 S3 등 외부 업로드 연동
-- **TypeScript** — 완전한 타입 지원 (d.ts 포함)
-- **ESM & CJS** — 두 가지 모듈 포맷 동시 지원
+- **React & Vanilla JS** — One package, two entry points
+- **Full Toolbar** — Headings, formatting, font, color, alignment, image, link, list, table, clear formatting
+- **Image Upload** — Drag & drop / paste / button click (all three supported)
+- **Custom Upload Handler** — Plug in your own S3, Cloudinary, or any upload logic via `onImageUpload`
+- **TypeScript** — Full type definitions included (d.ts)
+- **ESM & CJS** — Dual module format support
 
 ---
 
@@ -23,19 +25,19 @@ npm install tiptap-editor-kit
 
 ## Peer Dependencies
 
-React 버전을 사용할 경우 아래 패키지가 필요합니다:
+If you're using the React version, the following packages are required:
 
 ```bash
 npm install react react-dom
 ```
 
-**Note**: Vanilla JS 버전만 사용한다면 `react`, `react-dom` 설치는 필요하지 않습니다. (optional peer dependency)
+**Note**: If you only use the Vanilla JS version, `react` and `react-dom` are not required. (optional peer dependency)
 
 ---
 
 # React
 
-React 프로젝트에서 컴포넌트로 사용합니다.
+Use as a React component in your project.
 
 ## Basic Usage
 
@@ -83,15 +85,15 @@ function App() {
 
 | Prop | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `content` | `string` | Yes | — | 에디터에 표시할 HTML 문자열 |
-| `setContent` | `Dispatch<SetStateAction<string>>` | Yes | — | content 상태 업데이트 함수 |
-| `onImageUpload` | `(file: File) => Promise<string>` | No | `URL.createObjectURL` | 이미지 파일을 받아 URL을 반환하는 업로드 핸들러 |
+| `content` | `string` | Yes | — | HTML string to display in the editor |
+| `setContent` | `Dispatch<SetStateAction<string>>` | Yes | — | State setter function for content |
+| `onImageUpload` | `(file: File) => Promise<string>` | No | `URL.createObjectURL` | Upload handler that receives a file and returns a URL |
 
 ---
 
 # Vanilla JS
 
-React 없이 순수 JavaScript/TypeScript 프로젝트에서 사용합니다.
+Use without React in plain JavaScript/TypeScript projects.
 
 ## Basic Usage
 
@@ -136,50 +138,48 @@ const instance = createTiptapEditor({
 
 | Option | Type | Required | Default | Description |
 | --- | --- | --- | --- | --- |
-| `element` | `HTMLElement` | Yes | — | 에디터를 마운트할 DOM 요소 |
-| `content` | `string` | No | `''` | 초기 HTML 콘텐츠 |
-| `onUpdate` | `(html: string) => void` | No | — | 에디터 내용 변경 시 콜백 |
-| `onImageUpload` | `(file: File) => Promise<string>` | No | `URL.createObjectURL` | 이미지 업로드 핸들러 |
+| `element` | `HTMLElement` | Yes | — | DOM element to mount the editor |
+| `content` | `string` | No | `''` | Initial HTML content |
+| `onUpdate` | `(html: string) => void` | No | — | Callback fired on content change |
+| `onImageUpload` | `(file: File) => Promise<string>` | No | `URL.createObjectURL` | Image upload handler |
 
 ## Instance Methods
 
 | Method | Return | Description |
 | --- | --- | --- |
-| `getHTML()` | `string` | 현재 에디터 HTML 반환 |
-| `setContent(html)` | `void` | 에디터 콘텐츠를 설정 |
-| `destroy()` | `void` | 에디터 및 DOM 정리 |
-| `editor` | `Editor` | tiptap Editor 인스턴스 직접 접근 |
+| `getHTML()` | `string` | Returns the current editor HTML |
+| `setContent(html)` | `void` | Sets the editor content |
+| `destroy()` | `void` | Destroys the editor and cleans up DOM |
+| `editor` | `Editor` | Direct access to the tiptap Editor instance |
 
 ---
 
 ## CSS Imports
 
-사용 환경에 따라 필요한 CSS를 import합니다:
+Import the stylesheets based on your environment:
 
 | Import Path | Description | React | Vanilla |
 | --- | --- | --- | --- |
-| `tiptap-editor-kit/styles.css` | 에디터 콘텐츠 영역 스타일 (제목, 목록, 표, 인용 등) | Required | Required |
-| `tiptap-editor-kit/vanilla.css` | 툴바 UI 스타일 (Tailwind 없이 동작) | — | Required |
+| `tiptap-editor-kit/styles.css` | Editor content area styles (headings, lists, tables, blockquotes, etc.) | Required | Required |
+| `tiptap-editor-kit/vanilla.css` | Toolbar UI styles (works without Tailwind) | — | Required |
 
-**Note**: React 버전은 툴바에 Tailwind CSS 클래스를 사용합니다. 프로젝트에 Tailwind가 설정되어 있어야 툴바가 정상적으로 표시됩니다.
+**Note**: The React version uses Tailwind CSS classes for the toolbar. Your project must have Tailwind configured for the toolbar to render correctly.
 
 ---
 
 ## Toolbar Features
 
-에디터 툴바는 다음 기능을 제공합니다:
-
 | Group | Features |
 | --- | --- |
-| **History** | 실행취소, 다시실행 |
+| **History** | Undo, Redo |
 | **Heading** | H1, H2, H3 |
-| **Format** | 굵게, 기울임, 밑줄, 취소선 |
-| **Font** | 글자 크기 (12~32px), 글꼴 (Arial, Georgia 등) |
-| **Color** | 글자 색상, 배경 색상 (15색 팔레트) |
-| **Align** | 왼쪽, 가운데, 오른쪽 정렬 |
-| **Insert** | 이미지, 링크, 글머리 기호 목록, 번호 목록, 인용구 |
-| **Table** | 삽입, 행/열 추가·삭제, 셀 병합·분할, 테이블 삭제 |
-| **Etc** | 서식 제거 |
+| **Format** | Bold, Italic, Underline, Strikethrough |
+| **Font** | Font size (12–32px), Font family (Arial, Georgia, etc.) |
+| **Color** | Text color, Background color (15-color palette) |
+| **Align** | Left, Center, Right |
+| **Insert** | Image, Link, Bullet list, Ordered list, Blockquote |
+| **Table** | Insert, Add/delete rows & columns, Merge/split cells, Delete table |
+| **Etc** | Clear formatting |
 
 ---
 
