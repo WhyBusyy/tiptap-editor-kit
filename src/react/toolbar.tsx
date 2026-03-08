@@ -156,9 +156,9 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
   }, []);
 
   const toggleDropdown = useCallback(
-    (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
+    (setter: React.Dispatch<React.SetStateAction<boolean>>, current: boolean) => {
       closeAllDropdowns();
-      setter((prev) => !prev);
+      if (!current) setter(true);
     },
     [closeAllDropdowns],
   );
@@ -262,7 +262,7 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
         <button
           type='button'
           className={btnClass()}
-          onClick={() => toggleDropdown(setShowFontSize)}
+          onClick={() => toggleDropdown(setShowFontSize, showFontSize)}
           title='글자 크기 변경'
         >
           크기 ▾
@@ -291,7 +291,7 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
         <button
           type='button'
           className={btnClass()}
-          onClick={() => toggleDropdown(setShowFontFamily)}
+          onClick={() => toggleDropdown(setShowFontFamily, showFontFamily)}
           title='글꼴 변경'
         >
           글꼴 ▾
@@ -325,7 +325,7 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
         <button
           type='button'
           className={btnClass()}
-          onClick={() => toggleDropdown(setShowFontColor)}
+          onClick={() => toggleDropdown(setShowFontColor, showFontColor)}
           title='글자 색상 변경'
         >
           A<span className='ml-0.5 inline-block h-1 w-3 bg-red-500' />
@@ -346,7 +346,7 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
         <button
           type='button'
           className={btnClass()}
-          onClick={() => toggleDropdown(setShowBgColor)}
+          onClick={() => toggleDropdown(setShowBgColor, showBgColor)}
           title='글자 배경색 변경'
         >
           <span className='rounded bg-yellow-200 px-1'>A</span>▾
@@ -433,7 +433,7 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
         <button
           type='button'
           className={btnClass()}
-          onClick={() => toggleDropdown(setShowTableMenu)}
+          onClick={() => toggleDropdown(setShowTableMenu, showTableMenu)}
           title='테이블 삽입/편집'
         >
           <IconTable />
@@ -543,7 +543,7 @@ function Divider() {
 
 function DropdownPanel({ children }: { children: React.ReactNode }) {
   return (
-    <div className='absolute left-0 top-full z-50 mt-1 min-w-[160px] rounded border border-gray-200 bg-white py-1 shadow-lg'>
+    <div className='absolute left-0 top-full z-50 mt-1 rounded border border-gray-200 bg-white py-1 shadow-lg' style={{ minWidth: '160px' }}>
       {children}
     </div>
   );
@@ -551,13 +551,16 @@ function DropdownPanel({ children }: { children: React.ReactNode }) {
 
 function ColorPalette({ onSelect }: { onSelect: (color: string) => void }) {
   return (
-    <div className='absolute left-0 top-full z-50 mt-1 grid w-[180px] grid-cols-5 gap-1 rounded border border-gray-200 bg-white p-2 shadow-lg'>
+    <div
+      className='absolute left-0 top-full z-50 mt-1 rounded border border-gray-200 bg-white p-2 shadow-lg'
+      style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '4px', width: '180px' }}
+    >
       {COLORS.map((color) => (
         <button
           key={color}
           type='button'
-          className='h-6 w-6 rounded border border-gray-200 hover:scale-110'
-          style={{ backgroundColor: color }}
+          className='rounded border border-gray-200'
+          style={{ backgroundColor: color, width: '24px', height: '24px' }}
           onClick={() => onSelect(color)}
           title={color}
         />
