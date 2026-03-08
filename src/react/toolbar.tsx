@@ -2,6 +2,121 @@ import { useCallback, useRef, useState } from 'react';
 import type { Editor } from '@tiptap/react';
 import { FONT_SIZES, FONT_FAMILIES, COLORS, ICON_SIZE } from '../core/constants';
 
+// ─── Inline style constants ───
+
+const S = {
+  toolbar: {
+    display: 'flex',
+    flexWrap: 'wrap' as const,
+    alignItems: 'center',
+    gap: '8px',
+    borderBottom: '1px solid #d1d5db',
+    backgroundColor: '#f9fafb',
+    padding: '6px',
+  },
+  btn: {
+    display: 'flex',
+    height: '32px',
+    minWidth: '32px',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '4px',
+    padding: '0 6px',
+    fontSize: '14px',
+    border: 'none',
+    background: 'none',
+    color: '#4b5563',
+    cursor: 'pointer',
+    lineHeight: 1,
+    transition: 'background-color 0.15s, color 0.15s',
+  } as React.CSSProperties,
+  btnActive: {
+    backgroundColor: '#d1fae5',
+    color: '#047857',
+    boxShadow: '0 0 0 1px #6ee7b7',
+  },
+  divider: {
+    width: '1px',
+    height: '24px',
+    margin: '0 4px',
+    backgroundColor: '#d1d5db',
+  },
+  dropdown: {
+    position: 'relative' as const,
+  },
+  dropdownPanel: {
+    position: 'absolute' as const,
+    left: 0,
+    top: '100%',
+    zIndex: 50,
+    marginTop: '4px',
+    minWidth: '160px',
+    border: '1px solid #e5e7eb',
+    borderRadius: '4px',
+    backgroundColor: '#fff',
+    padding: '4px 0',
+    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)',
+  } as React.CSSProperties,
+  listItem: {
+    display: 'block',
+    width: '100%',
+    padding: '6px 12px',
+    border: 'none',
+    background: 'none',
+    textAlign: 'left' as const,
+    fontSize: '14px',
+    cursor: 'pointer',
+    color: '#374151',
+  },
+  colorPalette: {
+    position: 'absolute' as const,
+    left: 0,
+    top: '100%',
+    zIndex: 50,
+    marginTop: '4px',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(5, 1fr)',
+    gap: '4px',
+    width: '180px',
+    padding: '8px',
+    border: '1px solid #e5e7eb',
+    borderRadius: '4px',
+    backgroundColor: '#fff',
+    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)',
+  } as React.CSSProperties,
+  colorSwatch: {
+    width: '24px',
+    height: '24px',
+    border: '1px solid #e5e7eb',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    padding: 0,
+  },
+  colorIndicator: {
+    marginLeft: '2px',
+    display: 'inline-block',
+    height: '4px',
+    width: '12px',
+    backgroundColor: '#ef4444',
+  },
+  bgIndicator: {
+    borderRadius: '2px',
+    backgroundColor: '#fef08a',
+    padding: '0 4px',
+  },
+  caret: {
+    marginLeft: '2px',
+    fontSize: '10px',
+  },
+};
+
+const btnStyle = (active?: boolean): React.CSSProperties => ({
+  ...S.btn,
+  ...(active ? S.btnActive : {}),
+});
+
+// ─── SVG Icons ───
+
 function IconUndo() {
   return (
     <svg width={ICON_SIZE} height={ICON_SIZE} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
@@ -23,10 +138,8 @@ function IconRedo() {
 function IconAlignLeft() {
   return (
     <svg width={ICON_SIZE} height={ICON_SIZE} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
-      <line x1='17' y1='10' x2='3' y2='10' />
-      <line x1='21' y1='6' x2='3' y2='6' />
-      <line x1='21' y1='14' x2='3' y2='14' />
-      <line x1='17' y1='18' x2='3' y2='18' />
+      <line x1='17' y1='10' x2='3' y2='10' /><line x1='21' y1='6' x2='3' y2='6' />
+      <line x1='21' y1='14' x2='3' y2='14' /><line x1='17' y1='18' x2='3' y2='18' />
     </svg>
   );
 }
@@ -34,10 +147,8 @@ function IconAlignLeft() {
 function IconAlignCenter() {
   return (
     <svg width={ICON_SIZE} height={ICON_SIZE} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
-      <line x1='18' y1='10' x2='6' y2='10' />
-      <line x1='21' y1='6' x2='3' y2='6' />
-      <line x1='21' y1='14' x2='3' y2='14' />
-      <line x1='18' y1='18' x2='6' y2='18' />
+      <line x1='18' y1='10' x2='6' y2='10' /><line x1='21' y1='6' x2='3' y2='6' />
+      <line x1='21' y1='14' x2='3' y2='14' /><line x1='18' y1='18' x2='6' y2='18' />
     </svg>
   );
 }
@@ -45,10 +156,8 @@ function IconAlignCenter() {
 function IconAlignRight() {
   return (
     <svg width={ICON_SIZE} height={ICON_SIZE} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
-      <line x1='21' y1='10' x2='7' y2='10' />
-      <line x1='21' y1='6' x2='3' y2='6' />
-      <line x1='21' y1='14' x2='3' y2='14' />
-      <line x1='21' y1='18' x2='7' y2='18' />
+      <line x1='21' y1='10' x2='7' y2='10' /><line x1='21' y1='6' x2='3' y2='6' />
+      <line x1='21' y1='14' x2='3' y2='14' /><line x1='21' y1='18' x2='7' y2='18' />
     </svg>
   );
 }
@@ -75,8 +184,7 @@ function IconLink() {
 function IconBulletList() {
   return (
     <svg width={ICON_SIZE} height={ICON_SIZE} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
-      <line x1='8' y1='6' x2='21' y2='6' />
-      <line x1='8' y1='12' x2='21' y2='12' />
+      <line x1='8' y1='6' x2='21' y2='6' /><line x1='8' y1='12' x2='21' y2='12' />
       <line x1='8' y1='18' x2='21' y2='18' />
       <circle cx='4' cy='6' r='1' fill='currentColor' />
       <circle cx='4' cy='12' r='1' fill='currentColor' />
@@ -88,8 +196,7 @@ function IconBulletList() {
 function IconOrderedList() {
   return (
     <svg width={ICON_SIZE} height={ICON_SIZE} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
-      <line x1='10' y1='6' x2='21' y2='6' />
-      <line x1='10' y1='12' x2='21' y2='12' />
+      <line x1='10' y1='6' x2='21' y2='6' /><line x1='10' y1='12' x2='21' y2='12' />
       <line x1='10' y1='18' x2='21' y2='18' />
       <text x='2' y='8' fontSize='7' fill='currentColor' stroke='none' fontWeight='bold'>1</text>
       <text x='2' y='14' fontSize='7' fill='currentColor' stroke='none' fontWeight='bold'>2</text>
@@ -110,10 +217,8 @@ function IconTable() {
   return (
     <svg width={ICON_SIZE} height={ICON_SIZE} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
       <rect x='3' y='3' width='18' height='18' rx='2' />
-      <line x1='3' y1='9' x2='21' y2='9' />
-      <line x1='3' y1='15' x2='21' y2='15' />
-      <line x1='9' y1='3' x2='9' y2='21' />
-      <line x1='15' y1='3' x2='15' y2='21' />
+      <line x1='3' y1='9' x2='21' y2='9' /><line x1='3' y1='15' x2='21' y2='15' />
+      <line x1='9' y1='3' x2='9' y2='21' /><line x1='15' y1='3' x2='15' y2='21' />
     </svg>
   );
 }
@@ -127,6 +232,8 @@ function IconRemoveFormat() {
     </svg>
   );
 }
+
+// ─── Toolbar ───
 
 interface ToolbarProps {
   editor: Editor;
@@ -146,7 +253,6 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
   const bgColorRef = useRef<HTMLDivElement>(null);
   const tableMenuRef = useRef<HTMLDivElement>(null);
 
-  // ─── 드롭다운 외부 클릭 시 닫기 ───
   const closeAllDropdowns = useCallback(() => {
     setShowFontSize(false);
     setShowFontFamily(false);
@@ -163,7 +269,6 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
     [closeAllDropdowns],
   );
 
-  // ─── 링크 삽입 ───
   const handleLink = useCallback(() => {
     const url = window.prompt('URL을 입력하세요:');
     if (url) {
@@ -173,354 +278,163 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
     }
   }, [editor]);
 
-  // ─── 서식 제거 ───
   const handleRemoveFormat = useCallback(() => {
     editor.chain().focus().unsetAllMarks().clearNodes().run();
   }, [editor]);
 
-  const btnClass = (active?: boolean) =>
-    `flex h-8 min-w-8 items-center justify-center rounded px-1.5 text-sm transition-colors hover:bg-gray-100 ${active ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300' : 'text-gray-600'}`;
-
   return (
-    <div className='flex flex-wrap items-center gap-2 border-b border-gray-300 bg-gray-50 p-1.5'>
+    <div style={S.toolbar}>
       {/* ─── 실행취소 / 다시실행 ─── */}
-      <button type='button' className={btnClass()} onClick={() => editor.chain().focus().undo().run()} title='실행취소 (Ctrl+Z)'>
+      <button type='button' style={btnStyle()} onClick={() => editor.chain().focus().undo().run()} title='실행취소 (Ctrl+Z)'>
         <IconUndo />
       </button>
-      <button type='button' className={btnClass()} onClick={() => editor.chain().focus().redo().run()} title='다시실행 (Ctrl+Y)'>
+      <button type='button' style={btnStyle()} onClick={() => editor.chain().focus().redo().run()} title='다시실행 (Ctrl+Y)'>
         <IconRedo />
       </button>
 
       <Divider />
 
       {/* ─── 제목 ─── */}
-      <button
-        type='button'
-        className={btnClass(editor.isActive('heading', { level: 1 }))}
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        title='제목 1 (대제목)'
-      >
+      <button type='button' style={btnStyle(editor.isActive('heading', { level: 1 }))} onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} title='제목 1'>
         H1
       </button>
-      <button
-        type='button'
-        className={btnClass(editor.isActive('heading', { level: 2 }))}
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        title='제목 2 (중제목)'
-      >
+      <button type='button' style={btnStyle(editor.isActive('heading', { level: 2 }))} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} title='제목 2'>
         H2
       </button>
-      <button
-        type='button'
-        className={btnClass(editor.isActive('heading', { level: 3 }))}
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        title='제목 3 (소제목)'
-      >
+      <button type='button' style={btnStyle(editor.isActive('heading', { level: 3 }))} onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} title='제목 3'>
         H3
       </button>
 
       <Divider />
 
       {/* ─── 기본 서식 ─── */}
-      <button
-        type='button'
-        className={btnClass(editor.isActive('bold'))}
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        title='굵게 (Ctrl+B)'
-      >
+      <button type='button' style={btnStyle(editor.isActive('bold'))} onClick={() => editor.chain().focus().toggleBold().run()} title='굵게 (Ctrl+B)'>
         <strong>B</strong>
       </button>
-      <button
-        type='button'
-        className={btnClass(editor.isActive('italic'))}
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        title='기울임 (Ctrl+I)'
-      >
+      <button type='button' style={btnStyle(editor.isActive('italic'))} onClick={() => editor.chain().focus().toggleItalic().run()} title='기울임 (Ctrl+I)'>
         <em>I</em>
       </button>
-      <button
-        type='button'
-        className={btnClass(editor.isActive('underline'))}
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
-        title='밑줄 (Ctrl+U)'
-      >
+      <button type='button' style={btnStyle(editor.isActive('underline'))} onClick={() => editor.chain().focus().toggleUnderline().run()} title='밑줄 (Ctrl+U)'>
         <u>U</u>
       </button>
-      <button
-        type='button'
-        className={btnClass(editor.isActive('strike'))}
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        title='취소선 (Ctrl+Shift+S)'
-      >
+      <button type='button' style={btnStyle(editor.isActive('strike'))} onClick={() => editor.chain().focus().toggleStrike().run()} title='취소선'>
         <s>S</s>
       </button>
 
       <Divider />
 
       {/* ─── 폰트 크기 ─── */}
-      <div className='relative' ref={fontSizeRef}>
-        <button
-          type='button'
-          className={btnClass()}
-          onClick={() => toggleDropdown(setShowFontSize, showFontSize)}
-          title='글자 크기 변경'
-        >
+      <div style={S.dropdown} ref={fontSizeRef}>
+        <button type='button' style={btnStyle()} onClick={() => toggleDropdown(setShowFontSize, showFontSize)} title='글자 크기 변경'>
           크기 ▾
         </button>
         {showFontSize && (
           <DropdownPanel>
             {FONT_SIZES.map((size) => (
-              <button
-                key={size}
-                type='button'
-                className='w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100'
-                onClick={() => {
-                  (editor.commands as any).setFontSize(size);
-                  setShowFontSize(false);
-                }}
-              >
+              <ListItem key={size} onClick={() => { (editor.commands as any).setFontSize(size); setShowFontSize(false); }}>
                 {size}
-              </button>
+              </ListItem>
             ))}
           </DropdownPanel>
         )}
       </div>
 
       {/* ─── 폰트 패밀리 ─── */}
-      <div className='relative' ref={fontFamilyRef}>
-        <button
-          type='button'
-          className={btnClass()}
-          onClick={() => toggleDropdown(setShowFontFamily, showFontFamily)}
-          title='글꼴 변경'
-        >
+      <div style={S.dropdown} ref={fontFamilyRef}>
+        <button type='button' style={btnStyle()} onClick={() => toggleDropdown(setShowFontFamily, showFontFamily)} title='글꼴 변경'>
           글꼴 ▾
         </button>
         {showFontFamily && (
           <DropdownPanel>
             {FONT_FAMILIES.map((font) => (
-              <button
+              <ListItem
                 key={font}
-                type='button'
-                className='w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100'
                 style={{ fontFamily: font === '기본' ? 'inherit' : font }}
                 onClick={() => {
-                  if (font === '기본') {
-                    editor.chain().focus().unsetFontFamily().run();
-                  } else {
-                    editor.chain().focus().setFontFamily(font).run();
-                  }
+                  if (font === '기본') { editor.chain().focus().unsetFontFamily().run(); }
+                  else { editor.chain().focus().setFontFamily(font).run(); }
                   setShowFontFamily(false);
                 }}
               >
                 {font}
-              </button>
+              </ListItem>
             ))}
           </DropdownPanel>
         )}
       </div>
 
       {/* ─── 글자색 ─── */}
-      <div className='relative' ref={fontColorRef}>
-        <button
-          type='button'
-          className={btnClass()}
-          onClick={() => toggleDropdown(setShowFontColor, showFontColor)}
-          title='글자 색상 변경'
-        >
-          A<span className='ml-0.5 inline-block h-1 w-3 bg-red-500' />
-          ▾
+      <div style={S.dropdown} ref={fontColorRef}>
+        <button type='button' style={btnStyle()} onClick={() => toggleDropdown(setShowFontColor, showFontColor)} title='글자 색상 변경'>
+          A<span style={S.colorIndicator} />▾
         </button>
         {showFontColor && (
-          <ColorPalette
-            onSelect={(color) => {
-              editor.chain().focus().setColor(color).run();
-              setShowFontColor(false);
-            }}
-          />
+          <ColorPalette onSelect={(color) => { editor.chain().focus().setColor(color).run(); setShowFontColor(false); }} />
         )}
       </div>
 
       {/* ─── 배경색 ─── */}
-      <div className='relative' ref={bgColorRef}>
-        <button
-          type='button'
-          className={btnClass()}
-          onClick={() => toggleDropdown(setShowBgColor, showBgColor)}
-          title='글자 배경색 변경'
-        >
-          <span className='rounded bg-yellow-200 px-1'>A</span>▾
+      <div style={S.dropdown} ref={bgColorRef}>
+        <button type='button' style={btnStyle()} onClick={() => toggleDropdown(setShowBgColor, showBgColor)} title='글자 배경색 변경'>
+          <span style={S.bgIndicator}>A</span>▾
         </button>
         {showBgColor && (
-          <ColorPalette
-            onSelect={(color) => {
-              editor.chain().focus().toggleHighlight({ color }).run();
-              setShowBgColor(false);
-            }}
-          />
+          <ColorPalette onSelect={(color) => { editor.chain().focus().toggleHighlight({ color }).run(); setShowBgColor(false); }} />
         )}
       </div>
 
       <Divider />
 
       {/* ─── 정렬 ─── */}
-      <button
-        type='button'
-        className={btnClass(editor.isActive({ textAlign: 'left' }))}
-        onClick={() => editor.chain().focus().setTextAlign('left').run()}
-        title='왼쪽 정렬'
-      >
+      <button type='button' style={btnStyle(editor.isActive({ textAlign: 'left' }))} onClick={() => editor.chain().focus().setTextAlign('left').run()} title='왼쪽 정렬'>
         <IconAlignLeft />
       </button>
-      <button
-        type='button'
-        className={btnClass(editor.isActive({ textAlign: 'center' }))}
-        onClick={() => editor.chain().focus().setTextAlign('center').run()}
-        title='가운데 정렬'
-      >
+      <button type='button' style={btnStyle(editor.isActive({ textAlign: 'center' }))} onClick={() => editor.chain().focus().setTextAlign('center').run()} title='가운데 정렬'>
         <IconAlignCenter />
       </button>
-      <button
-        type='button'
-        className={btnClass(editor.isActive({ textAlign: 'right' }))}
-        onClick={() => editor.chain().focus().setTextAlign('right').run()}
-        title='오른쪽 정렬'
-      >
+      <button type='button' style={btnStyle(editor.isActive({ textAlign: 'right' }))} onClick={() => editor.chain().focus().setTextAlign('right').run()} title='오른쪽 정렬'>
         <IconAlignRight />
       </button>
 
       <Divider />
 
       {/* ─── 삽입 ─── */}
-      <button type='button' className={btnClass()} onClick={onInsertImage} title='이미지 삽입 (파일 선택)'>
+      <button type='button' style={btnStyle()} onClick={onInsertImage} title='이미지 삽입'>
         <IconImage />
       </button>
-      <button
-        type='button'
-        className={btnClass(editor.isActive('link'))}
-        onClick={handleLink}
-        title='링크 삽입/제거'
-      >
+      <button type='button' style={btnStyle(editor.isActive('link'))} onClick={handleLink} title='링크 삽입/제거'>
         <IconLink />
       </button>
-      <button
-        type='button'
-        className={btnClass(editor.isActive('bulletList'))}
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        title='글머리 기호 목록'
-      >
+      <button type='button' style={btnStyle(editor.isActive('bulletList'))} onClick={() => editor.chain().focus().toggleBulletList().run()} title='글머리 기호 목록'>
         <IconBulletList />
       </button>
-      <button
-        type='button'
-        className={btnClass(editor.isActive('orderedList'))}
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        title='번호 매기기 목록'
-      >
+      <button type='button' style={btnStyle(editor.isActive('orderedList'))} onClick={() => editor.chain().focus().toggleOrderedList().run()} title='번호 매기기 목록'>
         <IconOrderedList />
       </button>
-      <button
-        type='button'
-        className={btnClass(editor.isActive('blockquote'))}
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        title='인용구 블록'
-      >
+      <button type='button' style={btnStyle(editor.isActive('blockquote'))} onClick={() => editor.chain().focus().toggleBlockquote().run()} title='인용구 블록'>
         <IconBlockquote />
       </button>
 
       {/* ─── 테이블 ─── */}
-      <div className='relative' ref={tableMenuRef}>
-        <button
-          type='button'
-          className={btnClass()}
-          onClick={() => toggleDropdown(setShowTableMenu, showTableMenu)}
-          title='테이블 삽입/편집'
-        >
+      <div style={S.dropdown} ref={tableMenuRef}>
+        <button type='button' style={btnStyle()} onClick={() => toggleDropdown(setShowTableMenu, showTableMenu)} title='테이블 삽입/편집'>
           <IconTable />
-          <span className='ml-0.5 text-xs'>▾</span>
+          <span style={S.caret}>▾</span>
         </button>
         {showTableMenu && (
           <DropdownPanel>
-            <button
-              type='button'
-              className='w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100'
-              onClick={() => {
-                editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
-                setShowTableMenu(false);
-              }}
-            >
+            <ListItem onClick={() => { editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(); setShowTableMenu(false); }}>
               테이블 삽입 (3x3)
-            </button>
-            <button
-              type='button'
-              className='w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100'
-              onClick={() => {
-                editor.chain().focus().addColumnAfter().run();
-                setShowTableMenu(false);
-              }}
-            >
-              열 추가
-            </button>
-            <button
-              type='button'
-              className='w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100'
-              onClick={() => {
-                editor.chain().focus().addRowAfter().run();
-                setShowTableMenu(false);
-              }}
-            >
-              행 추가
-            </button>
-            <button
-              type='button'
-              className='w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100'
-              onClick={() => {
-                editor.chain().focus().deleteColumn().run();
-                setShowTableMenu(false);
-              }}
-            >
-              열 삭제
-            </button>
-            <button
-              type='button'
-              className='w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100'
-              onClick={() => {
-                editor.chain().focus().deleteRow().run();
-                setShowTableMenu(false);
-              }}
-            >
-              행 삭제
-            </button>
-            <button
-              type='button'
-              className='w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100'
-              onClick={() => {
-                editor.chain().focus().mergeCells().run();
-                setShowTableMenu(false);
-              }}
-            >
-              셀 병합
-            </button>
-            <button
-              type='button'
-              className='w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100'
-              onClick={() => {
-                editor.chain().focus().splitCell().run();
-                setShowTableMenu(false);
-              }}
-            >
-              셀 분할
-            </button>
-            <button
-              type='button'
-              className='w-full px-3 py-1.5 text-left text-sm text-red-500 hover:bg-gray-100'
-              onClick={() => {
-                editor.chain().focus().deleteTable().run();
-                setShowTableMenu(false);
-              }}
-            >
+            </ListItem>
+            <ListItem onClick={() => { editor.chain().focus().addColumnAfter().run(); setShowTableMenu(false); }}>열 추가</ListItem>
+            <ListItem onClick={() => { editor.chain().focus().addRowAfter().run(); setShowTableMenu(false); }}>행 추가</ListItem>
+            <ListItem onClick={() => { editor.chain().focus().deleteColumn().run(); setShowTableMenu(false); }}>열 삭제</ListItem>
+            <ListItem onClick={() => { editor.chain().focus().deleteRow().run(); setShowTableMenu(false); }}>행 삭제</ListItem>
+            <ListItem onClick={() => { editor.chain().focus().mergeCells().run(); setShowTableMenu(false); }}>셀 병합</ListItem>
+            <ListItem onClick={() => { editor.chain().focus().splitCell().run(); setShowTableMenu(false); }}>셀 분할</ListItem>
+            <ListItem style={{ color: '#ef4444' }} onClick={() => { editor.chain().focus().deleteTable().run(); setShowTableMenu(false); }}>
               테이블 삭제
-            </button>
+            </ListItem>
           </DropdownPanel>
         )}
       </div>
@@ -528,39 +442,45 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
       <Divider />
 
       {/* ─── 서식 제거 ─── */}
-      <button type='button' className={btnClass()} onClick={handleRemoveFormat} title='모든 서식 제거'>
+      <button type='button' style={btnStyle()} onClick={handleRemoveFormat} title='모든 서식 제거'>
         <IconRemoveFormat />
       </button>
     </div>
   );
 }
 
-// ─── 공통 하위 컴포넌트 ───
+// ─── Sub-components ───
 
 function Divider() {
-  return <div className='mx-1 h-6 w-px bg-gray-300' />;
+  return <div style={S.divider} />;
 }
 
 function DropdownPanel({ children }: { children: React.ReactNode }) {
+  return <div style={S.dropdownPanel}>{children}</div>;
+}
+
+function ListItem({ children, onClick, style }: { children: React.ReactNode; onClick: () => void; style?: React.CSSProperties }) {
   return (
-    <div className='absolute left-0 top-full z-50 mt-1 rounded border border-gray-200 bg-white py-1 shadow-lg' style={{ minWidth: '160px' }}>
+    <button
+      type='button'
+      style={{ ...S.listItem, ...style }}
+      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#f3f4f6'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+      onClick={onClick}
+    >
       {children}
-    </div>
+    </button>
   );
 }
 
 function ColorPalette({ onSelect }: { onSelect: (color: string) => void }) {
   return (
-    <div
-      className='absolute left-0 top-full z-50 mt-1 rounded border border-gray-200 bg-white p-2 shadow-lg'
-      style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '4px', width: '180px' }}
-    >
+    <div style={S.colorPalette}>
       {COLORS.map((color) => (
         <button
           key={color}
           type='button'
-          className='rounded border border-gray-200'
-          style={{ backgroundColor: color, width: '24px', height: '24px' }}
+          style={{ ...S.colorSwatch, backgroundColor: color }}
           onClick={() => onSelect(color)}
           title={color}
         />

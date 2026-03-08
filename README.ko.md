@@ -163,7 +163,7 @@ const instance = createTiptapEditor({
 | `tiptap-editor-kit/styles.css` | 에디터 콘텐츠 영역 스타일 (제목, 목록, 표, 인용 등) | 필수 | 필수 |
 | `tiptap-editor-kit/vanilla.css` | 툴바 UI 스타일 (Tailwind 없이 동작) | — | 필수 |
 
-**참고**: React 버전은 툴바에 Tailwind CSS 클래스를 사용합니다. 프로젝트에 Tailwind가 설정되어 있어야 툴바가 정상적으로 표시됩니다.
+**참고**: React 버전 툴바는 inline style을 사용하므로 Tailwind CSS 의존성이 필요하지 않습니다.
 
 ---
 
@@ -190,6 +190,7 @@ src/
 ├── core/                    # 공유 모듈
 │   ├── constants.ts         #   색상, 폰트, 타입 정의
 │   ├── extensions.ts        #   Tiptap extensions 설정
+│   ├── font-size.ts         #   커스텀 FontSize 확장
 │   └── image-handler.ts     #   드롭 / 붙여넣기 / 파일선택 핸들러
 ├── react/                   # React 버전
 │   ├── index.tsx            #   TiptapEditor 컴포넌트

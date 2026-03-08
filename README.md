@@ -163,7 +163,7 @@ Import the stylesheets based on your environment:
 | `tiptap-editor-kit/styles.css` | Editor content area styles (headings, lists, tables, blockquotes, etc.) | Required | Required |
 | `tiptap-editor-kit/vanilla.css` | Toolbar UI styles (works without Tailwind) | — | Required |
 
-**Note**: The React version uses Tailwind CSS classes for the toolbar. Your project must have Tailwind configured for the toolbar to render correctly.
+**Note**: The React version toolbar uses inline styles — no Tailwind CSS dependency required.
 
 ---
 
@@ -190,6 +190,7 @@ src/
 ├── core/                    # Shared modules
 │   ├── constants.ts         #   Colors, fonts, type definitions
 │   ├── extensions.ts        #   Tiptap extensions configuration
+│   ├── font-size.ts         #   Custom FontSize extension
 │   └── image-handler.ts     #   Drop / paste / file-select handlers
 ├── react/                   # React version
 │   ├── index.tsx            #   TiptapEditor component
