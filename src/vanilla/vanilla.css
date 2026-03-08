@@ -12,7 +12,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2px;
+  gap: 8px;
   padding: 6px;
   border-bottom: 1px solid #d1d5db;
   background-color: #f9fafb;
@@ -39,8 +39,9 @@
 }
 
 .tte-btn.tte-active {
-  background-color: #e5e7eb;
+  background-color: #d1fae5;
   color: #047857;
+  box-shadow: 0 0 0 1px #6ee7b7;
 }
 
 .tte-divider {

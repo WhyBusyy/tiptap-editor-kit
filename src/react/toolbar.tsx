@@ -179,10 +179,10 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
   }, [editor]);
 
   const btnClass = (active?: boolean) =>
-    `flex h-8 min-w-8 items-center justify-center rounded px-1.5 text-sm hover:bg-gray-100 ${active ? 'bg-gray-200 text-emerald-700' : 'text-gray-600'}`;
+    `flex h-8 min-w-8 items-center justify-center rounded px-1.5 text-sm transition-colors hover:bg-gray-100 ${active ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300' : 'text-gray-600'}`;
 
   return (
-    <div className='flex flex-wrap items-center gap-0.5 border-b border-gray-300 bg-gray-50 p-1.5'>
+    <div className='flex flex-wrap items-center gap-2 border-b border-gray-300 bg-gray-50 p-1.5'>
       {/* ─── 실행취소 / 다시실행 ─── */}
       <button type='button' className={btnClass()} onClick={() => editor.chain().focus().undo().run()} title='실행취소 (Ctrl+Z)'>
         <IconUndo />
