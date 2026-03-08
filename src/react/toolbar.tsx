@@ -9,7 +9,7 @@ const S = {
     display: 'flex',
     flexWrap: 'wrap' as const,
     alignItems: 'center',
-    gap: '8px',
+    gap: '4px',
     borderBottom: '1px solid #d1d5db',
     backgroundColor: '#f9fafb',
     padding: '6px',

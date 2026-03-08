@@ -1,6 +1,6 @@
 {
   "name": "tiptap-editor-kit",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Custom Tiptap WYSIWYG editor — React & Vanilla JS",
   "type": "module",
   "main": "./dist/index.cjs",
