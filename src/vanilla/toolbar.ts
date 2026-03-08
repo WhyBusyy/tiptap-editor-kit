@@ -195,7 +195,7 @@ export function createToolbar(editor: Editor, onInsertImage: () => void): HTMLDi
     textBtn({ text: '크기 ▾', title: '글자 크기 변경', onClick: () => {} }),
     listPanel(FONT_SIZES.map((size) => ({
       label: size,
-      onClick: () => editor.chain().focus().setMark('textStyle', { fontSize: size }).run(),
+      onClick: () => (editor.commands as any).setFontSize(size),
     }))),
   ));
 

@@ -11,6 +11,7 @@ import { FontFamily } from '@tiptap/extension-font-family';
 import { Color } from '@tiptap/extension-color';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Underline } from '@tiptap/extension-underline';
+import { FontSize } from './font-size';
 import type { Extensions } from '@tiptap/core';
 
 export function createExtensions(): Extensions {
@@ -20,6 +21,7 @@ export function createExtensions(): Extensions {
     }),
     Underline,
     TextStyle,
+    FontSize,
     FontFamily,
     Color,
     Highlight.configure({ multicolor: true }),

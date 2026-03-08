@@ -275,7 +275,7 @@ export default function TiptapToolbar({ editor, onInsertImage }: ToolbarProps) {
                 type='button'
                 className='w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100'
                 onClick={() => {
-                  editor.chain().focus().setMark('textStyle', { fontSize: size }).run();
+                  (editor.commands as any).setFontSize(size);
                   setShowFontSize(false);
                 }}
               >
@@ -543,7 +543,7 @@ function Divider() {
 
 function DropdownPanel({ children }: { children: React.ReactNode }) {
   return (
-    <div className='absolute left-0 top-full z-50 mt-1 min-w-[120px] rounded border border-gray-200 bg-white py-1 shadow-lg'>
+    <div className='absolute left-0 top-full z-50 mt-1 min-w-[160px] rounded border border-gray-200 bg-white py-1 shadow-lg'>
       {children}
     </div>
   );
